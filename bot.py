@@ -1,9 +1,11 @@
+from flask import Flask, request
 import telebot
 from telebot import types
 import os
 import base64, marshal, zlib, bz2, quopri, lzma, codecs
 import hashlib, binascii
 from io import BytesIO
+import threading
 
 # Bot credentials
 BOT_TOKEN = '7558644926:AAE1LO5H3P7HJH68lJ2YQBBuF_P72hryPJU'
@@ -12,11 +14,19 @@ OWNER_ID = 7467384643
 bot = telebot.TeleBot(BOT_TOKEN)
 user_files = {}
 
+# Flask app
+app = Flask(__name__)
+
 WATERMARK = b'\n# ENC BY @NGYT777GG JOIN TELEGRAM CHANNEL\n'
+
+@app.route('/')
+def home():
+    return "Bot is running!"
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.reply_to(message, "Welcome! Please send any file (Python, HTML, JS, PHP, etc.) to encrypt.\n BOT MADE BY @NGYT777GG \n VIST OUR CHANNEL THAT'S MAKE YOUR DAY")
+    bot.reply_to(message, "Welcome! Please send any file (Python, HTML, JS, PHP, etc.) to encrypt.\n\n ➡️BOT MADE BY @NGYT777GG \n\n ☂️VIST OUR CHANNEL THAT'S MAKE YOUR DAY")
+
 
 @bot.message_handler(content_types=['document'])
 def handle_file(message):
@@ -34,9 +44,9 @@ def handle_file(message):
     bot.send_message(message.chat.id, f"Uploading file: {filename}\nProcessing...")
 
     # Inline encryption methods (first 10 shown, more later)
-    methods = ['marshal', 'base64', 'zlib', 'rot13', 'hex', 'bz2', 'quopri', 'lzma', 'xor',
-               'reverse', 'double_base64', 'md5', 'sha256', 'crc32', 'binascii', 'gzip',
-               'rle', 'caesar', 'triple_rot13', 'swapcase', 'xor_shift', 'nested_marshal', 'urlsafe_b64', 'html_escape']
+    methods = ['marshal', 'base64', 'zlib', 'rot13', 'hex', 'bz2', 'quopri','lzma', 'xor',
+               'reverse', 'double_base64', 'md5', 'sha256', 'crc32', 'binascii', 'gzip', 'rle', 
+               'caesar', 'triple_rot13', 'swapcase', 'xor_shift', 'nested_marshal', 'urlsafe_b64', 'html_escape']
 
     markup = types.InlineKeyboardMarkup()
     for i in range(0, len(methods), 2):
@@ -155,4 +165,11 @@ def encrypt_file(data, method):
     else:
         raise Exception("Unknown method")
 
-bot.polling()
+# Run bot in a separate thread
+def run_bot():
+    bot.polling()
+
+if __name__ == '__main__':
+    # Run Flask in one thread and Telegram bot in another thread
+    threading.Thread(target=run_bot).start()
+    app.run(port=8080)
