@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 import os
-import base64, marshal, zlib, bz2, quopri, uu, lzma, codecs
+import base64, marshal, zlib, bz2, quopri, lzma, codecs
 import hashlib, binascii
 from io import BytesIO
 
@@ -34,7 +34,7 @@ def handle_file(message):
     bot.send_message(message.chat.id, f"Uploading file: {filename}\nProcessing...")
 
     # Inline encryption methods (first 10 shown, more later)
-    methods = ['marshal', 'base64', 'zlib', 'rot13', 'hex', 'bz2', 'quopri', 'uu', 'lzma', 'xor',
+    methods = ['marshal', 'base64', 'zlib', 'rot13', 'hex', 'bz2', 'quopri', 'lzma', 'xor',
                'reverse', 'double_base64', 'md5', 'sha256', 'crc32', 'binascii', 'gzip',
                'rle', 'caesar', 'triple_rot13', 'swapcase', 'xor_shift', 'nested_marshal', 'urlsafe_b64', 'html_escape']
 
